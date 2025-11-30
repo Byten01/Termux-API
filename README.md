@@ -5,7 +5,9 @@ a high level api to interact with termux shell environment via C/C++. currently 
 ***
 
 ## Getting Started
+<p align="center">
 It is a termux only api so it should be compiled and used in a termux environment, it is recommended to use android studio or any kind of android virtual machine if using other device than android termux for development
+</p>
 
 <ins>**1. Downloading the repository:**</ins>
 
@@ -29,13 +31,22 @@ Or you can download [this repo](https://github.com/Byten01/Termux-API/archive/re
 cmake .
 make -j$(nproc)
 ```
-
+<p align="center">
 **After that it will produce a file named `libTkernel.so` which will be the dynamic library.**
+</p>
 
 3. Set the environment variable named `LD_LIBRARY_PATH` to the directory where the .so file is so application dynamic loader can load the `libTkernel.so` file. for example:
 ```sh
 export LD_LIBRARY_PATH=path/to/lib:$LD_LIBRARY_PATH
 ```
+<p align="center">
+  <strong>
+    This is only a temporary export. It lasts only until you close the terminal.<br>
+    You must set it again next time. To make it permanent, add this to your
+    <code>.bashrc</code> so it runs automatically whenever you open a terminal.
+  </strong>
+</p>
+
 4. In your application include the main Termux header
 ```c
 #include "Termux.h"

@@ -33,7 +33,9 @@ make -j$(nproc)
 ```
 
 <p align="center">
-**After that it will produce a file named `libTkernel.so` which will be the dynamic library.**
+  <strong>
+    After that it will produce a file named <code>libTkernel.so</code>, which will be the dynamic library.
+  </strong>
 </p>
 
 3. Set the environment variable named `LD_LIBRARY_PATH` to the directory where the .so file is so application dynamic loader can load the `libTkernel.so` file. for example:

@@ -31,6 +31,7 @@ Or you can download [this repo](https://github.com/Byten01/Termux-API/archive/re
 cmake .
 make -j$(nproc)
 ```
+
 <p align="center">
 **After that it will produce a file named `libTkernel.so` which will be the dynamic library.**
 </p>

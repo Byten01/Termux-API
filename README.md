@@ -16,12 +16,12 @@ Or you can download [this repo](https://github.com/Byten01/Termux-API/archive/re
 <ins>**2. Configuring the using the api:**</ins>
 
 1. After downloading the repo go inside the directory and you'll have 2 dir named `include` and `src`.
-2. here we are using dynamic linking to be dynamically linked by the app where we are going to use the api..to compile the source code to shared objects follow these commands
+2. here we are using dynamic linking to be dynamically linked by the app where we are going to use the api..to compile the source code via `CMakeLists.txt` follow these commands
 ```
 cmake .
 make -j$(nproc)
 ```
-3. after that it will produce a shared object named `libTkernel.so` which will be the compiled binary..now set the environment variable named `LD_LIBRARY_PATH` to the path where the .so file is for example:
+3. after that it will produce a shared object named `libTkernel.so` which will be the compiled binary..now set the environment variable named `LD_LIBRARY_PATH` to the path where the .so file is, so that the dynamic loader can load the `libTkernel.so` file... for example:
 ```
 export LD_LIBRARY_PATH=xxx/yyy:$LD_LIBRARY_PATH
 ```

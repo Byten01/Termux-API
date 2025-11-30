@@ -19,9 +19,11 @@ Or you can download [this repo](https://github.com/Byten01/Termux-API/archive/re
 <ins>**2. Configuring and using the api:**</ins>
 
 1. inside the repo you'll have 2 directories
-• include -> the declaration of the apis to be included
-• src -> the implementation of the apis
-2. here we are using dynamic linking so all the source code should be converted to a single dynamic library file  to be dynamically linked by the app..to compile the source code go to `src` and we are going to use cmake to automate compilation.. follow these commands to do that
+<ul>
+    <li>include -> the declaration of the apis to be included</li>
+    <li>src -> the implementation of the apis</li>
+</ul>
+2. Here, we are using dynamic linking, so all the source code will be compiled into a single dynamic library that the app will link to at runtime. To compile the source code, navigate to the `src` directory. We will use *CMake* to automate the compilation process. Follow these commands:
 ```sh
 cmake .
 make -j$(nproc)
@@ -43,3 +45,44 @@ clang++ example.cpp -o example -Lsrc -Iinclude -lTkernel
 
 ***
 
+
+
+## Examples 
+
+```c
+#include "Termux.h"
+
+int main(int argc, char *argv[])
+{
+	
+	char home_path[40];
+	char pwd[4096];
+	char temp[400];
+	char prefix[400];
+	char bin[400];
+	char shell[400];
+	
+	TgetHomeDir(home_path, sizeof(home_path));
+	std::cout << "termux home path is " << home_path << "\n";
+	
+	TgetCurrentDir(pwd, sizeof(pwd));
+	std::cout << "termux current dir is " << pwd << "\n";
+	
+	TgetTempDir(temp , sizeof(temp));
+	std::cout << "termux temp dir is " << temp << "\n";
+	
+	TgetPrefixDir(prefix , sizeof(prefix));
+	std::cout << "termux prefix dir is " << prefix << "\n";
+	
+	TgetBinDir(bin , sizeof(bin));
+	std::cout << "termux bin dir is " << bin << "\n";
+	
+	TgetShellDir(shell , sizeof(shell));
+	std::cout << "termux shell dir is " << shell << "\n";
+	
+		
+	return 0;
+}
+```
+**An example of getting termux directory paths**
+***

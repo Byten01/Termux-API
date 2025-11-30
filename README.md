@@ -29,6 +29,7 @@ export LD_LIBRARY_PATH=xxx/yyy:$LD_LIBRARY_PATH
 5. And then while compiling the app set the include directory to the `include` dir and linker directory to where your `libTkernel.so` exists..heres is the example, im using clang++ but you can use anything
 ```
 clang++ test.cpp -o test -Lsrc -Iinclude -lTkernel
+```
 
 ***
 

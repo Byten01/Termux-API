@@ -23,12 +23,14 @@ Or you can download [this repo](https://github.com/Byten01/Termux-API/archive/re
     <li>include -> the declaration of the apis to be included</li>
     <li>src -> the implementation of the apis</li>
 </ul>
+
 2. Here, we are using dynamic linking, so all the source code will be compiled into a single dynamic library that the app will link to at runtime. To compile the source code, navigate to the `src` directory. We will use *CMake* to automate the compilation process. Follow these commands:
 ```sh
 cmake .
 make -j$(nproc)
 ```
-**After that it will produce a file named `libTkernel.so` which will be the dynamic library**
+
+**After that it will produce a file named `libTkernel.so` which will be the dynamic library.**
 
 3. Set the environment variable named `LD_LIBRARY_PATH` to the directory where the .so file is so application dynamic loader can load the `libTkernel.so` file. for example:
 ```sh

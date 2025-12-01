@@ -13,8 +13,7 @@ int TgetTempDir(char* output , const int output_buff_size);
 int TgetPrefixDir(char* output, const int output_buff_size);
 int TgetBinDir(char* output , const int output_buff_size);
 int TgetShellDir(char* output , const int output_buff_size);
-bool TisSystemRooted();
-int TsetupStorage();
+
 
 #ifdef __cplusplus
 }

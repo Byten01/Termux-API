@@ -9,8 +9,6 @@
 #include "Turdefs.h"
 
 
-extern "C" {
-
 char* T_ErrmsgBuffer;
 
 
@@ -23,7 +21,7 @@ int T_setError(const char* fmt, ...) {
     va_start(args, fmt);
 
    
-    int size_needed = vsnprintf(nullptr, 0, fmt, args) + 1; // +1 for '\0'
+    int size_needed = vsnprintf(NULL, 0, fmt, args) + 1; // +1 for '\0'
     va_end(args);
 
 
@@ -60,5 +58,4 @@ int T_clearError()
 }
 
 
-}
 

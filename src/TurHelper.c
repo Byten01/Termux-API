@@ -8,24 +8,41 @@
 #include "TurErrors.h"
 
 
-extern "C" {
-
 
 
 // Environment variable
 
-const char* T_Getenv(const char* Envname)
+int T_Getenv(const char* Envname, char** output)
 {
         
-    if(!Envname) 
+    if(!Envname || !output) 
     {
         T_setError("invalid args given to Getenv");
-        return NULL;
+        return TMUX_INVALID_PTR;
     }
     
-   return getenv(Envname);
-    
-    
+   const char* env_ = getenv(Envname);
+   
+   if(!env_)
+   {
+       T_setError("failed to get env of %s", Envname);
+       return TMUX_FAILED;
+   }
+   
+   
+   const unsigned int str_size = strlen(env_);
+   
+   *output = malloc(str_size + 1);
+   
+   if(!*output) 
+   {
+       T_setError("failed to allocate buffer via malloc");
+       return TMUX_FAILED_MALLOC;
+   }
+   
+   strcpy(*output, env_);
+   return TMUX_SUCCESS;
+
 }
 
 // buffer based things
@@ -62,6 +79,31 @@ void T_ClearCharBuffer(char* buffer , const int buffer_size)
 }
 
 
+char* T_getPathBasename(const char* path)
+{
 
+    char *last_slash = strrchr(path, '/');
+    char *last_backslash = strrchr(path, '\\');
 
+    char *last_sep = NULL;
+    
+    if (last_slash && last_backslash) {
+        last_sep = (last_slash > last_backslash) ? last_slash : last_backslash;
+        
+    } else if (last_slash) {
+        last_sep = last_slash;
+        
+    } else if (last_backslash) {
+        last_sep = last_backslash;
+        
+    }
+
+    if (last_sep) {
+        *last_sep = '\0';
+    } else {
+        printf("No directory part\n");
+    }
 }
+
+
+

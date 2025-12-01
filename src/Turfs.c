@@ -1,7 +1,6 @@
-#include <cstdlib>
-#include <iostream>
+#include <stdlib.h>
 #include <unistd.h>
-#include <cstring>
+#include <string.h>
 #include <sys/wait.h>
 #include <sys/types.h>
 

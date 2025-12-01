@@ -2,7 +2,6 @@
 
 #pragma once
 
-#include <iostream>
 
 // main header of termux api to be included in projects
 

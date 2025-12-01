@@ -7,6 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(SOURCES
     TurHelper.cpp
     Turfs.cpp
+    TurErrors.cpp
 )
 
 add_library(Tkernel SHARED ${SOURCES})

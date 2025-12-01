@@ -9,20 +9,21 @@
 #include "Turdefs.h"
 #include "TurHelper.h"
 #include "Turfs.h"
+#include "TurErrors.h"
 
 extern "C" {
 
 int TgetHomeDir(char* output , const int output_buff_size) 
 {
     const char* env_home = "TERMUX__HOME";
-    const char* home_path = std::getenv(env_home);
+    const char* home_path = T_Getenv(env_home);
 
     if(!home_path) {
         T_setError("Failed to get env variable of home dir, getenv returned nullptr");
         return TMUX_FAILED;
     }
     
-    return MoveCharBuffer(home_path  , output , output_buff_size);
+    return T_MoveCharBuffer(home_path  , output , output_buff_size);
                 
 }
 
@@ -35,7 +36,7 @@ int TgetCurrentDir(char* output, const int output_buff_size)
         T_setError("failed to get the current dir via unix getcwd, returned nullptr");
         return TMUX_FAILED;
     }
-    int returned_ = MoveCharBuffer(cwd , output, output_buff_size);
+    int returned_ = T_MoveCharBuffer(cwd , output, output_buff_size);
     free(cwd);
     return returned_;
           
@@ -44,7 +45,7 @@ int TgetCurrentDir(char* output, const int output_buff_size)
 int TgetTempDir(char* output , const int output_buff_size) {
     
     const char* temp_env = "TMPDIR";
-    const char* temp_path = std::getenv(temp_env);
+    const char* temp_path = T_Getenv(temp_env);
     
     if(!temp_path)
     {
@@ -52,13 +53,13 @@ int TgetTempDir(char* output , const int output_buff_size) {
         return TMUX_FAILED;
     }
     
-    return MoveCharBuffer(temp_path, output , output_buff_size);
+    return T_MoveCharBuffer(temp_path, output , output_buff_size);
 }
 
 int TgetPrefixDir(char* output, const int output_buff_size) 
 {
     const char* prefix_env = "PREFIX";
-    const char* prefix_dir = std::getenv(prefix_env);
+    const char* prefix_dir = T_Getenv(prefix_env);
     
     if(!prefix_dir)
     {
@@ -66,14 +67,14 @@ int TgetPrefixDir(char* output, const int output_buff_size)
         return TMUX_FAILED;
     }
     
-    return MoveCharBuffer(prefix_dir , output , output_buff_size);
+    return T_MoveCharBuffer(prefix_dir , output , output_buff_size);
     
 }
 
 int TgetBinDir(char* output , const int output_buff_size)
 {
     const char* bin_env = "PATH";
-    const char* bin_path = std::getenv(bin_env);
+    const char* bin_path = T_Getenv(bin_env);
     
     if(!bin_path) 
     {
@@ -81,14 +82,14 @@ int TgetBinDir(char* output , const int output_buff_size)
         return TMUX_FAILED;
     }
     
-    return MoveCharBuffer(bin_path , output , output_buff_size);
+    return T_MoveCharBuffer(bin_path , output , output_buff_size);
 }
 
 
 int TgetShellDir(char* output , const int output_buff_size)
 {
     const char* shell_env = "SHELL";
-    const char* shell_path = std::getenv(shell_env);
+    const char* shell_path = T_Getenv(shell_env);
     
     if(!shell_path) 
     {
@@ -96,7 +97,7 @@ int TgetShellDir(char* output , const int output_buff_size)
         return TMUX_FAILED;
     }
     
-    return MoveCharBuffer(shell_path , output , output_buff_size);
+    return T_MoveCharBuffer(shell_path , output , output_buff_size);
 }
 
 

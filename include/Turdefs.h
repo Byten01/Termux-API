@@ -1,5 +1,13 @@
 #pragma once
 
+
+
+// custom datatypes 
+
+
+typedef unsigned char Tuint8;
+
+
 // independent macros
 
 
@@ -8,6 +16,8 @@
 
 #define TMUX_SYSTEM_PERMISSION_DENIED 10
 #define TMUX_INSUFFICIENT_BUFFER_SIZE 11
+#define TMUX_INVALID_PTR 12
+#define TMUX_FAILED_MALLOC 13
 
 
 // file system based macros 

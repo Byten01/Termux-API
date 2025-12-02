@@ -9,7 +9,6 @@
 #include "TurInfo.h"
 
 
-
 int TgetVersionInfo(char* output, const int output_buff_size)
 {
     const char* version_env = "TERMUX_VERSION";
@@ -90,6 +89,34 @@ int TgetLastCmdExecutedPath(char* output, const int output_buff_size)
 }
 
 
+int TgetTmuxPid(int* output)
+{
+    const char* termux_pid_env = "TERMUX_APP__PID";
+    char* termux_pid;
+    
+    if(T_Getenv(termux_pid_env, &termux_pid) < 0)   
+        return TMUX_FAILED;
+     
+    long pid_conv= atol(termux_pid);
+    unsigned int pid_ = (unsigned int)pid_conv;
+    
+    free(termux_pid);
+                   
+    if(pid_ <= 0)
+    {
+        T_setError("failed to get the termux pid, type conversion from long to unsigned int returned a value (0)");
+        return TMUX_FAILED;
+    }
+    
+    
+    
+    if(output)
+        *output = pid_;
+    
+    
+    return pid_;
+     
+}
 
 
 

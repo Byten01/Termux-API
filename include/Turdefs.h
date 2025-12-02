@@ -6,7 +6,7 @@
 
 
 typedef unsigned char Tuint8;
-
+typedef void* TPtr;
 
 // independent macros
 
@@ -19,12 +19,16 @@ typedef unsigned char Tuint8;
 #define TMUX_INVALID_PTR -12
 #define TMUX_FAILED_MALLOC -13
 
+#define TMUX_OUT_OF_RANGE -14
+#define TMUX_INVALID_DATA -15
+
 
 // file system based macros 
 
 
-#define TMUX_INSUCCICIENT_STORAGE 102
-#define TMUX_FILE_NOT_FOUND 103
-#define TMUX_FILE_EMPTY 104
+#define TMUX_INSUCCICIENT_STORAGE -102
+#define TMUX_FILE_NOT_FOUND -103
+#define TMUX_FILE_EMPTY -104
+
 
 

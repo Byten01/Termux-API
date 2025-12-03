@@ -58,17 +58,17 @@ int TgetLanguage(char* output, const int output_buff_size)
 }
 
 
-int TgetPid(int* output)
+int TgetPid(unsigned int* output)
 {
-    int pid_ = (int)getpid();
+    unsigned int pid_ = (unsigned int)getpid();
     
    if(output)
    {
        *output = pid_;
-       return 0;
+       return TMUX_SUCCESS;
    }
    
-    return pid_;
+    return (int)pid_;
 }
 
 
@@ -89,7 +89,7 @@ int TgetLastCmdExecutedPath(char* output, const int output_buff_size)
 }
 
 
-int TgetTmuxPid(int* output)
+int TgetTmuxPid(unsigned int* output)
 {
     const char* termux_pid_env = "TERMUX_APP__PID";
     char* termux_pid;
@@ -97,7 +97,7 @@ int TgetTmuxPid(int* output)
     if(T_Getenv(termux_pid_env, &termux_pid) < 0)   
         return TMUX_FAILED;
      
-    long pid_conv= atol(termux_pid);
+    const long pid_conv = atol(termux_pid);
     unsigned int pid_ = (unsigned int)pid_conv;
     
     free(termux_pid);
@@ -114,9 +114,65 @@ int TgetTmuxPid(int* output)
         *output = pid_;
     
     
-    return pid_;
+    return (int)pid_;
      
 }
+
+
+int TgetSEInfo(char* output, const int output_buff_size)
+{
+    const char* termux_se_info_env = "TERMUX_APP__SE_INFO";
+    char* termux_se_info;
+    
+    if(T_Getenv(termux_se_info_env, &termux_se_info) < 0)
+        return TMUX_FAILED;
+        
+    int returned_ = T_MoveCharBuffer(termux_se_info, output,output_buff_size);
+    free(termux_se_info);
+    return returned_;
+}
+
+
+
+
+
+
+
+
+int TgetSessionCountSinceBoot(unsigned int* output)
+{
+    const char* session_num_env = "SHELL_CMD__APP_TERMINAL_SESSION_NUMBER_SINCE_APP_START";
+    char* session_num;
+    
+    if(T_Getenv(session_num_env, &session_num) < 0)
+        return TMUX_FAILED;
+        
+    const long session_count_l = atol(session_num);    
+    const int session_count = (unsigned int)session_count_l;
+    
+    free(session_num);
+    
+    if(output == NULL)
+        return (int)session_count;
+        
+    *output = session_count;    
+    return TMUX_SUCCESS;    
+}
+
+
+int TgetPackageName(char* output, const int output_buff_size)
+{
+    const char* package_name_env = "TERMUX_APP__PACKAGE_NAME";
+    char* package_name;
+    
+    if(T_Getenv(package_name_env, &package_name) < 0)
+        return TMUX_FAILED;
+        
+    int returned_ = T_MoveCharBuffer(package_name, output,output_buff_size);
+    free(package_name);
+    return returned_;
+}
+
 
 
 

@@ -100,5 +100,44 @@ int TgetShellDir(char* output , const int output_buff_size)
 }
 
 
+int TgetExtrnlStorageDir(char* output, const int output_buff_size)
+{
+    const char* external_storage_env = "EXTERNAL_STORAGE";
+    char* external_storage;
+    
+    if(T_Getenv(external_storage_env, &external_storage) < 0)
+        return TMUX_FAILED;
+        
+    int returned_ = T_MoveCharBuffer(external_storage, output,output_buff_size);
+    free(external_storage);
+    return returned_;
+}
 
+
+int TgetLdPreloadDir(char* output, const int output_buff_size)
+{
+    const char* ld_preload_env = "LD_PRELOAD";
+    char* ld_preload;
+    
+    if(T_Getenv(ld_preload_env, &ld_preload) < 0)
+        return TMUX_FAILED;
+        
+    int returned_ = T_MoveCharBuffer(ld_preload, output,output_buff_size);
+    free(ld_preload);
+    return returned_;
+}
+
+
+int TgetBuildDataDir(char* output, const int output_buff_size)
+{
+    const char* build_dir_env = "TERMUX_APP__BUILD_DATA_DIR";
+    char* build_dir;
+    
+    if(T_Getenv(build_dir_env, &build_dir) < 0)
+        return TMUX_FAILED;
+        
+    int returned_ = T_MoveCharBuffer(build_dir, output,output_buff_size);
+    free(build_dir);
+    return returned_;
+}
 

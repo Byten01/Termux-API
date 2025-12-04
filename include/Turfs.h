@@ -22,6 +22,14 @@ int TgetLdPreloadDir(char* output, const int output_buff_size);
 int TgetBuildDataDir(char* output, const int output_buff_size);
 
 
+int TgetAndroidDataDir(char* output, const int output_buff_size);
+int TgetAndroidRootDir(char* output, const int output_buff_size);
+int TgetAndroidAssetsDir(char* output, const int output_buff_size);
+
+
+int TgetAndroidSysDir(char* output, const int output_buff_size);
+
+
 #ifdef __cplusplus
 }
 #endif

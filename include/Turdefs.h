@@ -4,8 +4,8 @@
 
 // custom datatypes 
 
-
-typedef unsigned char Tuint8;
+typedef unsigned int TUint;
+typedef unsigned char TUint8;
 typedef void* TPtr;
 
 // independent macros
@@ -25,10 +25,37 @@ typedef void* TPtr;
 
 // file system based macros 
 
+#define TMUX_BIN  (1 << 0)
+#define TMUX_FR       (1 << 1)
+#define TMUX_FRB    (TMUX_BIN | TMUX_R)
 
-#define TMUX_INSUCCICIENT_STORAGE -102
+#define TMUX_FW       (1 << 2)
+#define TMUX_FWB    (TMUX_BIN | TMUX_W)
+
+
+#define TMUX_FOVERRIDE (1 << 3)
+
+
+#define TMUX_INSUFFICIENT_STORAGE -102
 #define TMUX_FILE_NOT_FOUND -103
 #define TMUX_FILE_EMPTY -104
+
+
+
+
+// platform 
+
+#define TMUX_PLATFORM_F_DROID                (1 << 0)
+#define TMUX_PLATFORM_PLAY_STORE        (1 << 1)
+#define TMUX_PLATFORM_GITHUB                   (1 << 2)
+#define TMUX_PLATFORM_UNKNOWN           (1 << 3)
+
+
+
+
+
+
+
 
 
 

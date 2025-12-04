@@ -141,3 +141,42 @@ int TgetBuildDataDir(char* output, const int output_buff_size)
     return returned_;
 }
 
+
+
+
+
+
+int TgetAndroidDataDir(char* output, const int output_buff_size)
+{
+    return T_MoveCharBuffer("/data", output,output_buff_size);
+}
+
+
+int TgetAndroidRootDir(char* output, const int output_buff_size)
+{
+    return T_MoveCharBuffer("/", output, output_buff_size);
+}
+
+
+
+int TgetAndroidAssetsDir(char* output, const int output_buff_size)
+{
+    const char* android_asset_dir_env = "ANDROID_ASSETS";
+    char* asset_dir;
+    
+    if(T_Getenv(android_asset_dir_env, &asset_dir) < 0)
+        return TMUX_FAILED;
+       
+    int returned_ = T_MoveCharBuffer(asset_dir, output, output_buff_size);
+    free(asset_dir);
+    return returned_;
+}
+
+
+int TgetAndroidSysDir(char* output, const int output_buff_size)
+{
+    return T_MoveCharBuffer("/system", output, output_buff_size);
+}
+
+
+

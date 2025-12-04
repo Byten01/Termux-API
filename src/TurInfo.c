@@ -2,6 +2,8 @@
 
 
 #include <stdlib.h>
+#include <stdio.h>
+
 
 #include "Turdefs.h"
 #include "TurHelper.h"
@@ -58,9 +60,9 @@ int TgetLanguage(char* output, const int output_buff_size)
 }
 
 
-int TgetPid(unsigned int* output)
+int TgetPid(TUint* output)
 {
-    unsigned int pid_ = (unsigned int)getpid();
+    TUint pid_ = (TUint)getpid();
     
    if(output)
    {
@@ -89,7 +91,7 @@ int TgetLastCmdExecutedPath(char* output, const int output_buff_size)
 }
 
 
-int TgetTmuxPid(unsigned int* output)
+int TgetTmuxPid(TUint* output)
 {
     const char* termux_pid_env = "TERMUX_APP__PID";
     char* termux_pid;
@@ -98,7 +100,7 @@ int TgetTmuxPid(unsigned int* output)
         return TMUX_FAILED;
      
     const long pid_conv = atol(termux_pid);
-    unsigned int pid_ = (unsigned int)pid_conv;
+    TUint pid_ = (TUint)pid_conv;
     
     free(termux_pid);
                    
@@ -139,23 +141,24 @@ int TgetSEInfo(char* output, const int output_buff_size)
 
 
 
-int TgetSessionCountSinceBoot(unsigned int* output)
+int TgetSessionCountSinceBoot(TUint* output)
 {
-    const char* session_num_env = "SHELL_CMD__APP_TERMINAL_SESSION_NUMBER_SINCE_APP_START";
+    const char* session_num_env = "SHELL_CMD__APP_TERMINAL_SESSION_NUMBER_SINCE_BOOT";
     char* session_num;
+        
     
     if(T_Getenv(session_num_env, &session_num) < 0)
         return TMUX_FAILED;
         
-    const long session_count_l = atol(session_num);    
-    const int session_count = (unsigned int)session_count_l;
+
+    int session_count = atoi(session_num);    
     
     free(session_num);
     
     if(output == NULL)
-        return (int)session_count;
+        return session_count;
         
-    *output = session_count;    
+    *output = (TUint)session_count;    
     return TMUX_SUCCESS;    
 }
 
@@ -173,6 +176,69 @@ int TgetPackageName(char* output, const int output_buff_size)
     return returned_;
 }
 
+
+int TgetApkRelease(char* output, const int output_buff_size)
+{
+    const char* apk_release_env = "TERMUX_APP__APK_RELEASE";
+    char* apk_release;
+    
+    
+    if(T_Getenv(apk_release_env, &apk_release) < 0)
+        return TMUX_PLATFORM_UNKNOWN;
+        
+    if(output != NULL && output_buff_size)
+    {
+        int returned_ = T_MoveCharBuffer(apk_release, output, output_buff_size);
+        free(apk_release);
+        return returned_;
+    }
+    
+    
+    int flag = TMUX_PLATFORM_UNKNOWN;
+    
+    if (strcmp(apk_release, "F_DROID") == 0)
+        flag = TMUX_PLATFORM_F_DROID;
+        
+    if (strcmp(apk_release, "GITHUB") == 0)
+        flag = TMUX_PLATFORM_GITHUB;
+        
+    if(strcmp(apk_release, "PLAY_STORE") == 0)
+        flag = TMUX_PLATFORM_PLAY_STORE;
+        
+
+    free(apk_release);
+    return flag;
+}
+
+
+int TgetAndroidSdkVersion(TUint* output)
+{
+    const char* android_sdk_version_env = "ANDROID__BUILD_VERSION_SDK";
+    char* sdk_version;
+    
+          
+    if(T_Getenv(android_sdk_version_env, &sdk_version) < 0)
+        return TMUX_FAILED;
+        
+    int version_num = atoi(sdk_version);
+    
+    free(sdk_version);
+    
+    if(version_num <= 0 || version_num > 100)
+    {
+        T_setError("android vesion index out of range (%d).. its either conversion failed or a miscondigured environment variable is set", version_num);
+        return TMUX_FAILED;
+    }
+    
+    if(output == NULL)
+        return version_num;
+        
+        
+    *output = (TUint)version_num;            
+    return TMUX_SUCCESS;
+
+        
+}
 
 
 

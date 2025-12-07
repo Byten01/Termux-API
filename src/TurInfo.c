@@ -11,7 +11,7 @@
 #include "TurInfo.h"
 
 
-int TgetVersionInfo(char* output, const int output_buff_size)
+int TgetVersionInfo(char* output, int output_buff_size)
 {
     const char* version_env = "TERMUX_VERSION";
     char* version;
@@ -21,14 +21,14 @@ int TgetVersionInfo(char* output, const int output_buff_size)
     
        
     int returned_ = T_MoveCharBuffer(version, output, output_buff_size);
-    free(version);
+    T_MemFree((TPtr*)&version);
     return returned_;
     
     
 }
 
 
-int TgetShellCmdRunnerName(char* output, const int output_buff_size)
+int TgetShellCmdRunnerName(char* output, int output_buff_size)
 {
     const char* shell_cmd_env = "SHELL_CMD__RUNNER_NAME";
     char* shell_cmd;
@@ -39,13 +39,13 @@ int TgetShellCmdRunnerName(char* output, const int output_buff_size)
     
    
     int returned_ = T_MoveCharBuffer(shell_cmd, output, output_buff_size);
-    free(shell_cmd);
+    T_MemFree((TPtr*)&shell_cmd);
     return returned_;
 }
 
 
 
-int TgetLanguage(char* output, const int output_buff_size)
+int TgetLanguage(char* output, int output_buff_size)
 {
     const char* language_env = "LANG";
     char* language;
@@ -55,14 +55,14 @@ int TgetLanguage(char* output, const int output_buff_size)
     
     
     int returned_ = T_MoveCharBuffer(language, output, output_buff_size);
-    free(language);
+    T_MemFree((TPtr*)&language);
     return returned_;
 }
 
 
-int TgetPid(TUint* output)
+int TgetPid(pid_t* output)
 {
-    TUint pid_ = (TUint)getpid();
+    pid_t pid_ = getpid();
     
    if(output)
    {
@@ -74,7 +74,7 @@ int TgetPid(TUint* output)
 }
 
 
-int TgetLastCmdExecutedPath(char* output, const int output_buff_size)
+int TgetLastCmdExecutedPath(char* output, int output_buff_size)
 {
     const char* last_executed_env = "_";
     char* last_executed;
@@ -84,14 +84,14 @@ int TgetLastCmdExecutedPath(char* output, const int output_buff_size)
      
     
     int returned_ = T_MoveCharBuffer(last_executed, output, output_buff_size);
-    free(last_executed);
+    T_MemFree((TPtr*)&last_executed);
     return returned_;
     
     
 }
 
 
-int TgetTmuxPid(TUint* output)
+int TgetTmuxPid(pid_t* output)
 {
     const char* termux_pid_env = "TERMUX_APP__PID";
     char* termux_pid;
@@ -100,9 +100,9 @@ int TgetTmuxPid(TUint* output)
         return TMUX_FAILED;
      
     const long pid_conv = atol(termux_pid);
-    TUint pid_ = (TUint)pid_conv;
+    pid_t pid_ = (pid_t)pid_conv;
     
-    free(termux_pid);
+    T_MemFree((TPtr*)&termux_pid);
                    
     if(pid_ <= 0)
     {
@@ -121,7 +121,7 @@ int TgetTmuxPid(TUint* output)
 }
 
 
-int TgetSEInfo(char* output, const int output_buff_size)
+int TgetSEInfo(char* output, int output_buff_size)
 {
     const char* termux_se_info_env = "TERMUX_APP__SE_INFO";
     char* termux_se_info;
@@ -130,7 +130,7 @@ int TgetSEInfo(char* output, const int output_buff_size)
         return TMUX_FAILED;
         
     int returned_ = T_MoveCharBuffer(termux_se_info, output,output_buff_size);
-    free(termux_se_info);
+    T_MemFree((TPtr*)&termux_se_info);
     return returned_;
 }
 
@@ -153,7 +153,7 @@ int TgetSessionCountSinceBoot(TUint* output)
 
     int session_count = atoi(session_num);    
     
-    free(session_num);
+    T_MemFree((TPtr*)&session_num);
     
     if(output == NULL)
         return session_count;
@@ -163,7 +163,7 @@ int TgetSessionCountSinceBoot(TUint* output)
 }
 
 
-int TgetPackageName(char* output, const int output_buff_size)
+int TgetPackageName(char* output, int output_buff_size)
 {
     const char* package_name_env = "TERMUX_APP__PACKAGE_NAME";
     char* package_name;
@@ -172,12 +172,12 @@ int TgetPackageName(char* output, const int output_buff_size)
         return TMUX_FAILED;
         
     int returned_ = T_MoveCharBuffer(package_name, output,output_buff_size);
-    free(package_name);
+    T_MemFree((TPtr*)&package_name);
     return returned_;
 }
 
 
-int TgetApkRelease(char* output, const int output_buff_size)
+int TgetApkRelease(char* output, int output_buff_size)
 {
     const char* apk_release_env = "TERMUX_APP__APK_RELEASE";
     char* apk_release;
@@ -189,7 +189,7 @@ int TgetApkRelease(char* output, const int output_buff_size)
     if(output != NULL && output_buff_size)
     {
         int returned_ = T_MoveCharBuffer(apk_release, output, output_buff_size);
-        free(apk_release);
+        T_MemFree((TPtr*)&apk_release);
         return returned_;
     }
     
@@ -206,7 +206,7 @@ int TgetApkRelease(char* output, const int output_buff_size)
         flag = TMUX_PLATFORM_PLAY_STORE;
         
 
-    free(apk_release);
+    T_MemFree((TPtr*)&apk_release);
     return flag;
 }
 
@@ -222,11 +222,42 @@ int TgetAndroidSdkVersion(TUint* output)
         
     int version_num = atoi(sdk_version);
     
-    free(sdk_version);
+    T_MemFree((TPtr*)&sdk_version);
     
     if(version_num <= 0 || version_num > 100)
     {
         T_setError("android vesion index out of range (%d).. its either conversion failed or a miscondigured environment variable is set", version_num);
+        return TMUX_FAILED;
+    }
+    
+    if(output == NULL)
+        return version_num;
+        
+        
+    *output = (TUint)version_num;            
+    return TMUX_SUCCESS;
+
+        
+}
+
+
+
+int TgetTmuxSdkVersion(TUint* output)
+{
+    const char* termux_sdk_version_env = "TERMUX_APP__TARGET_SDK";
+    char* termux_sdk_version;
+    
+          
+    if(T_Getenv(termux_sdk_version_env, &termux_sdk_version) < 0)
+        return TMUX_FAILED;
+        
+    int version_num = atoi(termux_sdk_version);
+    
+    T_MemFree((TPtr*)&termux_sdk_version);
+    
+    if(version_num <= 0 || version_num > 100)
+    {
+        T_setError("termux vesion index out of range (%d).. its either conversion failed or a miscondigured environment variable is set", version_num);
         return TMUX_FAILED;
     }
     

@@ -11,7 +11,7 @@
 #include "TurErrors.h"
 
 
-int TgetHomeDir(char* output , const int output_buff_size) 
+int TgetHomeDir(char* output ,  int output_buff_size) 
 {
     const char* env_home = "TERMUX__HOME";
     char* home_path;
@@ -20,12 +20,12 @@ int TgetHomeDir(char* output , const int output_buff_size)
         return TMUX_FAILED;    
     
     int returned_ = T_MoveCharBuffer(home_path  , output , output_buff_size);
-    free(home_path);
+    T_MemFree((TPtr*)&home_path);
     return returned_;
                 
 }
 
-int TgetCurrentDir(char* output, const int output_buff_size) 
+int TgetCurrentDir(char* output, int output_buff_size) 
 {
     
     char* cwd = getcwd(NULL, 0);
@@ -35,12 +35,12 @@ int TgetCurrentDir(char* output, const int output_buff_size)
         return TMUX_FAILED;
     }
     int returned_ = T_MoveCharBuffer(cwd , output, output_buff_size);
-    free(cwd);
+    T_MemFree((TPtr*)&cwd);
     return returned_;
           
 }
 
-int TgetTempDir(char* output , const int output_buff_size) {
+int TgetTempDir(char* output , int output_buff_size) {
     
     const char* temp_env = "TMPDIR";
     char* temp_path;
@@ -50,11 +50,11 @@ int TgetTempDir(char* output , const int output_buff_size) {
     
     
     int returned_ = T_MoveCharBuffer(temp_path, output , output_buff_size);
-    free(temp_path);
+    T_MemFree((TPtr*)&temp_path);
     return returned_;
 }
 
-int TgetPrefixDir(char* output, const int output_buff_size) 
+int TgetPrefixDir(char* output, int output_buff_size) 
 {
     const char* prefix_env = "PREFIX";
     char* prefix_dir;
@@ -65,12 +65,12 @@ int TgetPrefixDir(char* output, const int output_buff_size)
     
     
     int returned_ = T_MoveCharBuffer(prefix_dir , output , output_buff_size);
-    free(prefix_dir);
+    T_MemFree((TPtr*)&prefix_dir);
     return returned_;
     
 }
 
-int TgetBinDir(char* output , const int output_buff_size)
+int TgetBinDir(char* output , int output_buff_size)
 {
     const char* bin_env = "PATH";
     char* bin_path;
@@ -80,12 +80,12 @@ int TgetBinDir(char* output , const int output_buff_size)
     
     
     int returned_ = T_MoveCharBuffer(bin_path , output , output_buff_size);
-    free(bin_path);
+    T_MemFree((TPtr*)&bin_path);
     return returned_;
 }
 
 
-int TgetShellDir(char* output , const int output_buff_size)
+int TgetShellDir(char* output , int output_buff_size)
 {
     const char* shell_env = "SHELL";
     const char* shell_path;
@@ -95,26 +95,18 @@ int TgetShellDir(char* output , const int output_buff_size)
     
     
     int returned_ = T_MoveCharBuffer(shell_path , output , output_buff_size);
-    free(shell_path);
+    T_MemFree((TPtr*)&shell_path);
     return returned_;
 }
 
 
-int TgetExtrnlStorageDir(char* output, const int output_buff_size)
-{
-    const char* external_storage_env = "EXTERNAL_STORAGE";
-    char* external_storage;
-    
-    if(T_Getenv(external_storage_env, &external_storage) < 0)
-        return TMUX_FAILED;
-        
-    int returned_ = T_MoveCharBuffer(external_storage, output,output_buff_size);
-    free(external_storage);
-    return returned_;
+int TgetExtrnlStorageDir(char* output, int output_buff_size)
+{     
+    return T_MoveCharBuffer("/storage", output,output_buff_size);
 }
 
 
-int TgetLdPreloadDir(char* output, const int output_buff_size)
+int TgetLdPreloadDir(char* output, int output_buff_size)
 {
     const char* ld_preload_env = "LD_PRELOAD";
     char* ld_preload;
@@ -123,12 +115,12 @@ int TgetLdPreloadDir(char* output, const int output_buff_size)
         return TMUX_FAILED;
         
     int returned_ = T_MoveCharBuffer(ld_preload, output,output_buff_size);
-    free(ld_preload);
+    T_MemFree((TPtr*)&ld_preload);
     return returned_;
 }
 
 
-int TgetBuildDataDir(char* output, const int output_buff_size)
+int TgetBuildDataDir(char* output, int output_buff_size)
 {
     const char* build_dir_env = "TERMUX_APP__BUILD_DATA_DIR";
     char* build_dir;
@@ -137,7 +129,7 @@ int TgetBuildDataDir(char* output, const int output_buff_size)
         return TMUX_FAILED;
         
     int returned_ = T_MoveCharBuffer(build_dir, output,output_buff_size);
-    free(build_dir);
+    T_MemFree((TPtr*)&build_dir);
     return returned_;
 }
 
@@ -146,20 +138,20 @@ int TgetBuildDataDir(char* output, const int output_buff_size)
 
 
 
-int TgetAndroidDataDir(char* output, const int output_buff_size)
+int TgetAndroidDataDir(char* output, int output_buff_size)
 {
     return T_MoveCharBuffer("/data", output,output_buff_size);
 }
 
 
-int TgetAndroidRootDir(char* output, const int output_buff_size)
+int TgetAndroidRootDir(char* output, int output_buff_size)
 {
     return T_MoveCharBuffer("/", output, output_buff_size);
 }
 
 
 
-int TgetAndroidAssetsDir(char* output, const int output_buff_size)
+int TgetAndroidAssetsDir(char* output, int output_buff_size)
 {
     const char* android_asset_dir_env = "ANDROID_ASSETS";
     char* asset_dir;
@@ -168,15 +160,26 @@ int TgetAndroidAssetsDir(char* output, const int output_buff_size)
         return TMUX_FAILED;
        
     int returned_ = T_MoveCharBuffer(asset_dir, output, output_buff_size);
-    free(asset_dir);
+    T_MemFree((TPtr*)&asset_dir);
     return returned_;
 }
 
 
-int TgetAndroidSysDir(char* output, const int output_buff_size)
+int TgetAndroidSysDir(char* output, int output_buff_size)
 {
     return T_MoveCharBuffer("/system", output, output_buff_size);
 }
 
 
-
+int TgetTmuxBaseApkDir(char* output, int output_buff_size)
+{
+    const char* termux_baseApk_dir_env = "TERMUX_APP__APK_FILE";
+    char* baseApk_dir;
+    
+    if(T_Getenv(termux_baseApk_dir_env, &baseApk_dir) < 0)
+        return TMUX_FAILED;
+       
+    int returned_ = T_MoveCharBuffer(baseApk_dir, output, output_buff_size);
+    T_MemFree((TPtr*)&baseApk_dir);
+    return returned_;    
+}

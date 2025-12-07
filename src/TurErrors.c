@@ -10,6 +10,7 @@
 
 
 char* T_ErrmsgBuffer;
+const int DEBUG = 1;
 
 
 int T_setError(const char* fmt, ...) {
@@ -36,6 +37,9 @@ int T_setError(const char* fmt, ...) {
 
     T_clearError();
     T_ErrmsgBuffer = new_buffer;
+    
+    if(DEBUG > 0)
+        printf("%s\n", T_ErrmsgBuffer);
 
     return TMUX_SUCCESS;
 }
@@ -43,6 +47,9 @@ int T_setError(const char* fmt, ...) {
 
 const char* T_getError()
 {
+    if(!T_ErrmsgBuffer)
+        return "None";
+        
     return T_ErrmsgBuffer;
 }
 

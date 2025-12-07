@@ -2,6 +2,8 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <errno.h>
+#include <signal.h>
 
 #include "Turdefs.h"
 #include "TurHelper.h"
@@ -30,15 +32,11 @@ int T_Getenv(const char* Envname, char** output)
    }
    
    
-   const unsigned int str_size = strlen(env_);
+   const unsigned int str_size = strlen(env_);   
+   int returned_;
    
-   *output = malloc(str_size + 1);
-   
-   if(!*output) 
-   {
-       T_setError("failed to allocate buffer via malloc");
-       return TMUX_FAILED_MALLOC;
-   }
+   if((returned_ = T_MemAlloc((TPtr*)output, str_size + 1)) < 0)
+       return returned_;
    
    strcpy(*output, env_);
    return TMUX_SUCCESS;
@@ -49,7 +47,7 @@ int T_Getenv(const char* Envname, char** output)
 
 
 
-int T_MoveCharBuffer(const char* input  , char* output , const int output_size) 
+int T_MoveCharBuffer(const char* input  , char* output , int output_size) 
 {
         
     if(!input) 
@@ -73,14 +71,14 @@ int T_MoveCharBuffer(const char* input  , char* output , const int output_size)
 }
 
 
-void T_ClearCharBuffer(char* buffer , const int buffer_size)
+void T_ClearCharBuffer(char* buffer , int buffer_size)
 {
     memset(buffer, 0, buffer_size);
 }
 
 
 
-int T_MemAlloc(TPtr* allocator_Ptr , const TUint alloc_size)
+int T_MemAlloc(TPtr* allocator_Ptr , TUint alloc_size)
 {
     
     if(!allocator_Ptr || alloc_size == 0)
@@ -105,12 +103,38 @@ int T_MemAlloc(TPtr* allocator_Ptr , const TUint alloc_size)
 
 int T_MemFree(TPtr* allocated_Ptr) 
 {
-    if(!*allocated_Ptr || allocated_Ptr)
+    
+    
+    if(!allocated_Ptr || !*allocated_Ptr)
     {
         T_setError("failed to free allocated memory, pointer is already NULL or invalid");
         return TMUX_FAILED;
     }
     
     free(*allocated_Ptr);
+    *allocated_Ptr = NULL;
     return TMUX_SUCCESS;
 }
+
+
+
+
+
+
+int T_sendSignalToPid(pid_t Pid, int signal) 
+{
+
+    if(Pid == 0 || signal <=0)
+    {
+        T_setError("failed to kill process by process id, invalid args given");
+        return TMUX_FAILED;
+    }
+        
+    if(kill(Pid, signal) < 0)
+    {
+        T_setError("failed to kill process id %u, Error: %s", Pid, strerror(errno));
+        return TMUX_FAILED;
+    }
+    return TMUX_SUCCESS;
+}
+

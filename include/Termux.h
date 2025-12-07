@@ -6,6 +6,10 @@
 // main header of termux api to be included in projects
 
 
+#ifndef __ANDROID__
+    #error "this is a termux only api, so it should only be compiled in a termux environment"
+#endif
+
 
 #ifdef __cplusplus
 extern "C" {
@@ -17,6 +21,7 @@ extern "C" {
 #include "Turfs.h"
 #include "TurErrors.h"
 #include "TurInfo.h"
+#include "TurProcess.h"
 
 
 #ifdef __cplusplus

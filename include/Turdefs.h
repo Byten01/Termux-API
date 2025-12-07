@@ -21,6 +21,7 @@ typedef void* TPtr;
 
 #define TMUX_OUT_OF_RANGE -14
 #define TMUX_INVALID_DATA -15
+#define TMUX_OPEAREATION_NOT_PERMITTED -16
 
 
 // file system based macros 
@@ -39,7 +40,7 @@ typedef void* TPtr;
 #define TMUX_INSUFFICIENT_STORAGE -102
 #define TMUX_FILE_NOT_FOUND -103
 #define TMUX_FILE_EMPTY -104
-
+#define TMUX_FILE_IN_USE -105
 
 
 

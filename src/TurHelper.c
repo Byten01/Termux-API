@@ -14,12 +14,12 @@
 
 // Environment variable
 
-int T_Getenv(const char* Envname, char** output)
+int T_Getenv(const char* Envname, const char** output, int* get_output_size)
 {
         
-    if(!Envname || !output) 
+    if(!Envname) 
     {
-        T_setError("invalid args given to Getenv");
+        T_setError("envname is NULL or invalid");
         return TMUX_INVALID_PTR;
     }
     
@@ -31,14 +31,16 @@ int T_Getenv(const char* Envname, char** output)
        return TMUX_FAILED;
    }
    
+   if(output)
+   {
+       *output = env_;
+   }
    
-   const unsigned int str_size = strlen(env_);   
-   int returned_;
+   if(get_output_size)
+       *get_output_size = strlen(env_);
+      
    
-   if((returned_ = T_MemAlloc((TPtr*)output, str_size + 1)) < 0)
-       return returned_;
    
-   strcpy(*output, env_);
    return TMUX_SUCCESS;
 
 }
@@ -55,16 +57,20 @@ int T_MoveCharBuffer(const char* input  , char* output , int output_size)
         T_setError("failed to move char buffer, given input is empty or invalid");
         return TMUX_FAILED;
     }
+
+    const int input_string_size = strlen(input);
     
-    const int input_string_size = strlen(input) + 1;
+    if(output == NULL)
+        return (int)input_string_size + 1;
+        
     
-    if(output_size < input_string_size) 
+    if(output_size <= input_string_size) 
     {
         T_setError("failed to move char buffer, the output allocated buffer size is less than the string size");
         return TMUX_INSUFFICIENT_BUFFER_SIZE;
     }
     
-    strncpy(output , input , output_size);
+    strncpy(output , input , output_size - 1);
     output[output_size - 1] = '\0';
     return TMUX_SUCCESS;
 
@@ -121,20 +127,99 @@ int T_MemFree(TPtr* allocated_Ptr)
 
 
 
-int T_sendSignalToPid(pid_t Pid, int signal) 
+int T_SendSignalToPid(pid_t pid, int signal) 
 {
 
-    if(Pid == 0 || signal <=0)
+    if(pid == 0 || signal <=0)
     {
         T_setError("failed to kill process by process id, invalid args given");
         return TMUX_FAILED;
     }
         
-    if(kill(Pid, signal) < 0)
+    if(kill(pid, signal) < 0)
     {
-        T_setError("failed to kill process id %u, Error: %s", Pid, strerror(errno));
+        T_setError("failed to kill process id %u, Error: %s", pid, strerror(errno));
         return TMUX_FAILED;
     }
     return TMUX_SUCCESS;
 }
 
+
+
+
+int T_ReadFile(const char* filepath, int remove_newline, char* output, int output_buff_size)
+{
+    // coming soon
+}
+
+
+int T_FReadBufferD(FILE *fp, char** output) {
+    
+    
+    if(!fp ||  !output)
+    {
+        T_setError("failed to dynamically read file buffer, file pointer is invalid or NULL");
+        return TMUX_FAILED;
+    }
+    
+    
+    TUint cap = 1024;
+    TUint len_total = 0;
+    
+    char *buffer_total;
+   
+   
+    if(T_MemAlloc((TPtr*)&buffer_total, cap) < 0)
+        return TMUX_FAILED;
+        
+    while (1) {
+        size_t n = fread(buffer_total + len_total, 1, cap - len_total, fp);
+        len_total += n;
+
+        if (n == 0)
+            break;
+
+        if (len_total == cap) {
+            cap *= 2;
+            char *tmp = realloc(buffer_total, cap);
+            
+            if(!tmp)
+            {
+                T_MemFree((TPtr*)&buffer_total);
+                T_setError("failed to realloc buffer in tmp");
+                return TMUX_FAILED;
+            }
+                        
+            buffer_total = tmp;
+        }
+    }
+    
+    buffer_total[len_total] = '\0';        
+    *output = buffer_total;
+    
+    return TMUX_SUCCESS;
+}
+
+
+
+int T_GetParentPgid(pid_t* output)
+{
+    pid_t ppid = getppid();
+    
+    if(!ppid)
+    {
+        T_setError("failed to get ppid in GetParentPgid");
+        return TMUX_FAILED;
+    }
+    
+    pid_t pgid = getpgid(ppid);
+    
+    if(!pgid)
+    {
+        T_setError("failed to get pgid of %d", ppid);
+        return TMUX_FAILED;
+    }
+    
+    *output =  pgid;
+    return TMUX_SUCCESS;
+}

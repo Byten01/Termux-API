@@ -6,6 +6,11 @@
 extern "C" {
 #endif
 
+#define TMUX_HOMEDIR "/data/data/com.termux/files/home"
+#define TMUX_ROOTFSDIR "/data/data/com.termux/file"
+
+
+
 
 int TgetHomeDir(char* output , int output_buff_size);
 int TgetCurrentDir(char* output, int output_buff_size);

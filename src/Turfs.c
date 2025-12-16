@@ -13,16 +13,37 @@
 
 int TgetHomeDir(char* output ,  int output_buff_size) 
 {
-    const char* env_home = "TERMUX__HOME";
-    const char* home_path;
-    int returned_;
+    const char* env_home = "TERMUX__HOME";    
+    const char* home_path_fb = TMUX_HOMEDIR;
+    const char* home_path = NULL;
+    
+    const char* ptr;
+    int returned_ = 0;
 
     returned_ = T_Getenv(env_home, &home_path, NULL);
     
     if(returned_ < 0)
-        return returned_;           
+    {
+        
+        if(access(home_path_fb, F_OK) != 0)
+        {
+            T_setError("failed to get the termux backup home dir, permission denied or fpath doesnt exists");
+            return TMUX_FAILED;                        
+        }
+        
+        ptr = home_path_fb;
+        
+    } else if(access(home_path, F_OK) != 0)
+    {
+        T_setError("failed to access the home dir path set in env variable, permission denied or fpath doesnt exists");
+        return TMUX_FAILED;
+        
+    } else
+    {
+        ptr = home_path;   
+    }
     
-    returned_ = T_MoveCharBuffer(home_path  , output , output_buff_size);
+    returned_ = T_MoveCharBuffer(ptr  , output , output_buff_size);
     return returned_;
                 
 }
@@ -33,7 +54,8 @@ int TgetCurrentDir(char* output, int output_buff_size)
     char* cwd = getcwd(NULL, 0);
     int returned_;
     
-    if(!cwd) {
+    if(!cwd)
+    {
         T_setError("failed to get the current dir via unix getcwd, returned nullptr");
         return TMUX_FAILED;
     }
@@ -203,4 +225,10 @@ int TgetTmuxBaseApkDir(char* output, int output_buff_size)
     returned_ = T_MoveCharBuffer(baseApk_dir, output, output_buff_size);
     return returned_;    
     
+}
+
+
+int TreadFileBuffer(const char* filepath, char* output, int output_buff_size)
+{
+    return T_ReadFile(filepath , output, output_buff_size);
 }

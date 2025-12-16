@@ -1,12 +1,22 @@
 #pragma once
 
 
+#include <stdio.h>
 
 // custom datatypes 
 
 typedef unsigned int TUint;
 typedef unsigned char TUint8;
 typedef void* TPtr;
+typedef FILE TFile;
+
+typedef enum 
+{
+    TMUX_FTYPE_NORMAL,
+    TMUX_FTYPE_PIPE
+    
+} TFile_Mode;
+
 
 // independent macros
 
@@ -26,7 +36,7 @@ typedef void* TPtr;
 
 // file system based macros 
 
-#define TMUX_BIN  (1 << 0)
+#define TMUX_BIN     (1 << 0)
 #define TMUX_FR       (1 << 1)
 #define TMUX_FRB    (TMUX_BIN | TMUX_R)
 
@@ -35,6 +45,8 @@ typedef void* TPtr;
 
 
 #define TMUX_FOVERRIDE (1 << 3)
+
+
 
 
 #define TMUX_INSUFFICIENT_STORAGE -102

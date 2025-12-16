@@ -124,7 +124,10 @@ int T_MemFree(TPtr* allocated_Ptr)
 
 
 
-
+int T_HaveAccess(const char* filepath, int flags)
+{
+    return access(filepath , flags);
+}
 
 
 int T_SendSignalToPid(pid_t pid, int signal) 
@@ -147,13 +150,86 @@ int T_SendSignalToPid(pid_t pid, int signal)
 
 
 
-int T_ReadFile(const char* filepath, int remove_newline, char* output, int output_buff_size)
+int T_OpenFileDescriptor(const char* filepath, char* mode, TFile** output, TFile_Mode open_mode)
 {
-    // coming soon
+    
+    if(!filepath || !mode || !output)
+    {
+        T_setError("failed to open file discriptor, invalid arguments given");
+        return TMUX_INVALID_PTR;    
+    }
+    
+    TFile* fp = NULL;
+    
+    
+    switch(open_mode)
+    {
+        case TMUX_FTYPE_NORMAL:
+        {            
+            fp = fopen(filepath , mode);             
+            break;           
+        }
+        
+        case TMUX_FTYPE_PIPE: 
+        {
+            fp = popen(filepath, mode);
+            break;
+        }
+    }
+    
+
+    if(!fp)
+    {
+        printf("an error occured while opening file (%s) with (%s) permission. Error: ", filepath , mode, strerror(errno));
+        return TMUX_FAILED;
+    }
+    
+    if(output)
+    {
+        *output = fp;
+    }
+            
+    return TMUX_SUCCESS;
 }
 
 
-int T_FReadBufferD(FILE *fp, char** output) {
+
+int T_CloseFileDescriptor(TFile* handle, TFile_Mode close_mode, int* returncode)
+{
+    if (!handle) {
+        T_setError("file handle is NULL");
+        return TMUX_INVALID_PTR;
+    }
+    
+    int returned_ = 0;
+
+    switch(close_mode)
+    {
+        case TMUX_FTYPE_NORMAL:
+        {
+            returned_ = fclose(handle);
+            break;
+        }
+        
+        case TMUX_FTYPE_PIPE:
+        {
+            returned_ = pclose(handle);
+            break;
+        }
+    }
+    
+    
+    if(returncode)
+    {
+        *returncode = returned_;
+    }
+    
+    return TMUX_SUCCESS;
+}
+
+
+
+int T_FReadBufferD(TFile* fp, char** output) {
     
     
     if(!fp ||  !output)
@@ -222,4 +298,71 @@ int T_GetParentPgid(pid_t* output)
     
     *output =  pgid;
     return TMUX_SUCCESS;
+}
+
+
+
+
+
+
+int T_ReadFile(const char* filepath , char* output, int output_buff_size)
+{
+    
+    TFile* handle;
+    char* buffer;
+    int returned_;
+    int f_returned_;
+    
+    if(!filepath)
+    {
+        T_setError("failed to read file, file path is NULL");
+        return TMUX_INVALID_PTR;
+    }
+    
+    
+    returned_ = T_OpenFileDescriptor(
+            filepath, 
+            "r" , 
+            &handle,
+            TMUX_FTYPE_NORMAL
+    );
+    
+    if(returned_ < 0)
+        return returned_;
+        
+        
+
+    returned_ = T_FReadBufferD(
+            handle , 
+            &buffer
+    );
+    
+
+    if(returned_ < 0)
+    {
+        T_CloseFileDescriptor(
+                handle, 
+                TMUX_FTYPE_NORMAL, 
+                NULL
+        );
+        return returned_;
+    }
+        
+    returned_ = T_MoveCharBuffer(
+            buffer, 
+            output, 
+            output_buff_size
+    );
+    
+    T_MemFree((TPtr*)&buffer);
+    
+    T_CloseFileDescriptor(
+            handle, 
+            TMUX_FTYPE_NORMAL, 
+            NULL
+    );
+    
+    return returned_;
+                     
+    
 }

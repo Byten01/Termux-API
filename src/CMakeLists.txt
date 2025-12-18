@@ -10,6 +10,7 @@ set(SOURCES
     TurErrors.c
     TurInfo.c
     TurProcess.c
+    init.c
 )
 
 add_library(Tkernel SHARED ${SOURCES})

@@ -12,11 +12,14 @@
 #include "TurErrors.h"
 
 
+
 TMux_Paths TermuxFsPaths;
 
 
 void InitPaths() 
 {
+    
+    int returned_;
     
     
     struct passwd *pw = getpwuid(getuid());
@@ -29,10 +32,30 @@ void InitPaths()
     }
     
     char* shell_path = pw->pw_shell;
-    strncpy(TermuxFsPaths.T_AppRootDir , shell_path, PATH_MAX);
+    int shell_path_size = strlen(shell_path);
+    
+    
+    returned_ = T_MemAlloc(
+            (TPtr*)&TermuxFsPaths.T_AppRootDir, 
+            shell_path_size + 1
+    );
+    
+    if(returned_ < 0)
+    {
+        const char* Error = T_getError();
+        printf("[FATAL ERROR] %s : %s\n", __FILE__, Error);
+        exit(1);
+    }
+        
+        
+    strncpy(
+        TermuxFsPaths.T_AppRootDir , 
+        shell_path, 
+        shell_path_size + 1
+    );
 
     char* marker = strstr(
-            TermuxFsPaths.T_AppRootDir, 
+            TermuxFsPaths.T_AppRootDir,
             "/files/"
     );
     
@@ -43,79 +66,110 @@ void InitPaths()
     }    
     *marker = '\0';
     
+    const char* Root = TermuxFsPaths.T_AppRootDir;
+    
+    
     
 
-    snprintf(TermuxFsPaths.T_FilesDir,
-             sizeof(TermuxFsPaths.T_FilesDir),
-             "%s/files",
-             TermuxFsPaths.T_AppRootDir);
     
-    snprintf(TermuxFsPaths.T_BinDir,
-             sizeof(TermuxFsPaths.T_BinDir),
-             "%s/files/usr/bin",
-             TermuxFsPaths.T_AppRootDir);
     
-    snprintf(TermuxFsPaths.T_LibexecDir,
-             sizeof(TermuxFsPaths.T_LibexecDir),
-             "%s/files/usr/libexec",
-             TermuxFsPaths.T_AppRootDir);
+    const char* PathFormats[] = {
+        
+        "%s",
+        "%s/files",
+        "%s/files/usr/bin",
+        
+        "%s/files/usr/lib",        
+        "%s/files/usr/libexec",
+        "%s/files/etc",
+        
+        "%s/files/home",        
+        "%s/files/usr/tmp",
+        "%s/files/usr"
+    };
     
-    snprintf(TermuxFsPaths.T_EtcDir,
-             sizeof(TermuxFsPaths.T_EtcDir),
-             "%s/files/etc",
-             TermuxFsPaths.T_AppRootDir);
     
-    snprintf(TermuxFsPaths.T_LibDir,
-             sizeof(TermuxFsPaths.T_LibDir),
-             "%s/files/usr/lib",
-             TermuxFsPaths.T_AppRootDir);
+    char** PathMem[] = {
+        &TermuxFsPaths.T_AppRootDir,
+        &TermuxFsPaths.T_FilesDir,
+        &TermuxFsPaths.T_BinDir,
+        &TermuxFsPaths.T_LibDir,
+        &TermuxFsPaths.T_LibexecDir,
+        &TermuxFsPaths.T_EtcDir,
+        &TermuxFsPaths.T_HomeDir,
+        &TermuxFsPaths.T_TmpDir,
+        &TermuxFsPaths.T_PrefixDir
+    };
     
-    snprintf(TermuxFsPaths.T_HomeDir,
-             sizeof(TermuxFsPaths.T_HomeDir),
-             "%s/files/home",
-             TermuxFsPaths.T_AppRootDir);
-    
-    snprintf(TermuxFsPaths.T_TmpDir,
-             sizeof(TermuxFsPaths.T_TmpDir),
-             "%s/files/usr/tmp",
-             TermuxFsPaths.T_AppRootDir);
-    
-    snprintf(TermuxFsPaths.T_PrefixDir,
-             sizeof(TermuxFsPaths.T_PrefixDir),
-             "%s/files/usr",
-             TermuxFsPaths.T_AppRootDir); 
+
              
-             
-    TermuxFsPaths.T_AllPaths[0] = TermuxFsPaths.T_AppRootDir;
-    TermuxFsPaths.T_AllPaths[1] = TermuxFsPaths.T_FilesDir;
-    TermuxFsPaths.T_AllPaths[2] = TermuxFsPaths.T_BinDir;
-    TermuxFsPaths.T_AllPaths[3] = TermuxFsPaths.T_LibexecDir;
-    TermuxFsPaths.T_AllPaths[4] = TermuxFsPaths.T_EtcDir;
-    TermuxFsPaths.T_AllPaths[5] = TermuxFsPaths.T_LibDir;
-    TermuxFsPaths.T_AllPaths[6] = TermuxFsPaths.T_HomeDir;
-    TermuxFsPaths.T_AllPaths[7] = TermuxFsPaths.T_TmpDir;
-    TermuxFsPaths.T_AllPaths[8] = TermuxFsPaths.T_PrefixDir;
-
-  
-    printf("root: %s\n", TermuxFsPaths.T_AppRootDir);
-    printf("rootfs: %s\n", TermuxFsPaths.T_FilesDir);
-    printf("libexec: %s\n", TermuxFsPaths.T_LibexecDir);
-    printf("etc: %s\n", TermuxFsPaths.T_EtcDir);
-    printf("lib: %s\n", TermuxFsPaths.T_LibDir);
-    printf("home: %s\n", TermuxFsPaths.T_HomeDir);
-    printf("tmp: %s\n", TermuxFsPaths.T_TmpDir);
-    printf("prefix: %s\n", TermuxFsPaths.T_PrefixDir);
-
-
     const int path_count = sizeof(TermuxFsPaths.T_AllPaths) / sizeof(char*);
     
-    for(int i=0; i < path_count; i++)
+    
+    for(int i=1; i < path_count; i++)
     {
-        if(access(TermuxFsPaths.T_AllPaths[i], F_OK) == 0)
+        const char** Ptr = PathMem[i];  
+        const char* format = PathFormats[i];
+        
+        const int size = snprintf(NULL, 0, format , Root);
+        
+        
+
+        
+        returned_ = T_MemAlloc(
+                (TPtr*)Ptr,
+                size + 1
+        );
+        
+        if(returned_ < 0)
         {
-            printf("path exists %s\n", TermuxFsPaths.T_AllPaths[i]);
+            const char* Error = T_getError();
+            printf("[FATAL ERROR] %s : %s\n", __FILE__, Error);
+            exit(1);
         }
+        
+        snprintf(
+            *Ptr, 
+            size + 1, 
+            format, 
+            Root
+        );
+        
+        
+        if(access(*Ptr, F_OK) != 0)
+        {
+            #ifdef TURFS_DBGPRINT
+                printf("[INFO] Path doesnt exists %s\n", *Ptr);
+            #endif
+            
+        } else {
+            #ifdef TURFS_DBGPRINT
+                printf("[INFO] Path exists %s\n", *Ptr);
+            #endif
+        }
+        
+        TermuxFsPaths.T_AllPaths[i] = *Ptr;
+        
     }
+    
+
+
+        
+    
+    #ifdef TURFS_DBGPRINT
+        printf("root: %s\n", TermuxFsPaths.T_AppRootDir);
+        printf("rootfs: %s\n", TermuxFsPaths.T_FilesDir);
+        printf("libexec: %s\n", TermuxFsPaths.T_LibexecDir);
+        printf("etc: %s\n", TermuxFsPaths.T_EtcDir);
+        printf("lib: %s\n", TermuxFsPaths.T_LibDir);
+        printf("home: %s\n", TermuxFsPaths.T_HomeDir);
+        printf("tmp: %s\n", TermuxFsPaths.T_TmpDir);
+        printf("prefix: %s\n", TermuxFsPaths.T_PrefixDir);
+   #endif
+
+
+
+
     
     
 }

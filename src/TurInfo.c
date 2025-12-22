@@ -17,13 +17,21 @@ int TgetVersionInfo(char* output, int output_buff_size)
     const char* version;
     int returned_;
     
-    returned_ = T_Getenv(version_env, &version, NULL);
+    returned_ = T_Getenv(
+            version_env, 
+            &version, 
+            NULL
+    );
     
     if(returned_ < 0)
         return returned_;
     
        
-    returned_ = T_MoveCharBuffer(version, output, output_buff_size);
+    returned_ = T_MoveCharBuffer(
+            version, 
+            output, 
+            output_buff_size
+    );
     return returned_;
     
     

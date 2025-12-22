@@ -11,15 +11,15 @@ extern "C" {
 
 typedef struct 
 {
-    char T_AppRootDir[PATH_MAX];
-    char T_FilesDir[PATH_MAX];
-    char T_BinDir[PATH_MAX];
-    char T_LibDir[PATH_MAX];
-    char T_LibexecDir[PATH_MAX];
-    char T_EtcDir[PATH_MAX];
-    char T_HomeDir[PATH_MAX];
-    char T_TmpDir[PATH_MAX];
-    char T_PrefixDir[PATH_MAX];
+    char* T_AppRootDir;
+    char* T_FilesDir;
+    char* T_BinDir;
+    char* T_LibDir;
+    char* T_LibexecDir;
+    char* T_EtcDir;
+    char* T_HomeDir;
+    char* T_TmpDir;
+    char* T_PrefixDir;
     
     char* T_AllPaths[9];
     
@@ -64,7 +64,7 @@ int TgetTmuxBaseApkDir(char* output, int output_buff_size);
 void InitPaths();
 
 int TgetKnownFolderPath(TMux_DirFlags flag, char* output, int output_buff_size);
-
+int TreadFileBuffer(const char* filepath, char* output, int output_buff_size);
 
 #ifdef __cplusplus
 }

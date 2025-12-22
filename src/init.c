@@ -7,6 +7,6 @@
 __attribute__((constructor))
 void INIT_DYNAMIC_LINK(void)
 {
-    printf("dynamic linker loaded .so file\n");
+    
     InitPaths();
 }

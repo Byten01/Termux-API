@@ -12,7 +12,9 @@
 char* T_ErrmsgBuffer;
 
 
-int T_setError(const char* fmt, ...) {
+int T_setError(const char* fmt, ...) 
+{
+    
     if (!fmt)
         return TMUX_INVALID_PTR;
         

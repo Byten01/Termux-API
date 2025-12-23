@@ -303,24 +303,22 @@ int TgetBinDir(char* output , int output_buff_size)
 int TgetShellDir(char* output , int output_buff_size)
 {
     const char* shell_env = "SHELL";
-    const char* shell_path;
-    int returned_;
-    
-    returned_ = T_Getenv(shell_env, &shell_path, NULL);
-    
-    if(returned_ < 0)
-        return returned_;
-    
-    
-    returned_ = T_MoveCharBuffer(shell_path , output , output_buff_size);
-    return returned_;
+
+    return T_GetEnvOrDefault(
+            shell_env,
+            output,
+            output_buff_size
+    );
 }
 
 
 int TgetExtrnlStorageDir(char* output, int output_buff_size)
-{     
+{
+    
+    const char* android_storage_path = "/storage";
+    
     return T_MoveCharBuffer(
-            "/storage", 
+            android_storage_path, 
             output,
             output_buff_size
     );
@@ -330,45 +328,24 @@ int TgetExtrnlStorageDir(char* output, int output_buff_size)
 int TgetLdPreloadDir(char* output, int output_buff_size)
 {
     const char* ld_preload_env = "LD_PRELOAD";
-    const char* ld_preload;
-    int returned_;
-    
-    returned_ = T_Getenv(
-            ld_preload_env, 
-            &ld_preload, 
-            NULL
-    );
-    
-    if(returned_ < 0)
-        return returned_;
-        
-    returned_ = T_MoveCharBuffer(
-            ld_preload, 
+
+    return T_GetEnvOrDefault(
+            ld_preload_env,
             output,
             output_buff_size
     );
-    return returned_;
 }
 
 
 int TgetBuildDataDir(char* output, int output_buff_size)
 {
     const char* build_dir_env = "TERMUX_APP__BUILD_DATA_DIR";
-    const char* build_dir;
-    int returned_;
     
-    returned_ = T_Getenv(
-            build_dir_env, 
-            &build_dir, 
-            NULL
+    return T_GetEnvOrDefault(
+            build_dir_env,    
+            output,
+            output_buff_size
     );
-   
-   if(returned_ < 0)
-       return returned_;
-
-        
-    returned_ = T_MoveCharBuffer(build_dir, output,output_buff_size);
-    return returned_;
 }
 
 
@@ -378,8 +355,10 @@ int TgetBuildDataDir(char* output, int output_buff_size)
 
 int TgetAndroidDataDir(char* output, int output_buff_size)
 {
+    const char* android_data_path = "/data";
+    
     return T_MoveCharBuffer(
-            "/data", 
+            android_data_path, 
             output,
             output_buff_size
     );
@@ -388,8 +367,11 @@ int TgetAndroidDataDir(char* output, int output_buff_size)
 
 int TgetAndroidRootDir(char* output, int output_buff_size)
 {
+    
+    const char* android_root_path = "/";
+    
     return T_MoveCharBuffer(
-            "/", 
+            android_root_path, 
             output, 
             output_buff_size
     );
@@ -399,8 +381,12 @@ int TgetAndroidRootDir(char* output, int output_buff_size)
 
 int TgetAndroidAssetsDir(char* output, int output_buff_size)
 {
+    
+    const char* android_assets_dir = "/system/app";
+    
+    
     return T_MoveCharBuffer(
-            "/system/app", 
+            android_assets_dir, 
             output, 
             output_buff_size
     );
@@ -409,8 +395,12 @@ int TgetAndroidAssetsDir(char* output, int output_buff_size)
 
 int TgetAndroidSysDir(char* output, int output_buff_size)
 {
+    
+    const char* android_sys_dir = "/sys";
+    
+    
     return T_MoveCharBuffer(
-            "/system", 
+            android_sys_dir, 
             output, 
             output_buff_size
     );
@@ -420,21 +410,21 @@ int TgetAndroidSysDir(char* output, int output_buff_size)
 int TgetTmuxBaseApkDir(char* output, int output_buff_size)
 {
     const char* termux_baseApk_dir_env = "TERMUX_APP__APK_FILE";
-    const char* baseApk_dir;
-    int returned_;
     
-    returned_ = T_Getenv(termux_baseApk_dir_env, &baseApk_dir, NULL);
-    
-    if(returned_ < 0)
-        return returned_;
-       
-    returned_ = T_MoveCharBuffer(baseApk_dir, output, output_buff_size);
-    return returned_;    
+    return T_GetEnvOrDefault(
+            termux_baseApk_dir_env,
+            output,
+            output_buff_size
+    );
     
 }
 
 
 int TreadFileBuffer(const char* filepath, char* output, int output_buff_size)
 {
-    return T_ReadFile(filepath , output, output_buff_size);
+    return T_ReadFile(
+            filepath , 
+            output, 
+            output_buff_size
+    );
 }

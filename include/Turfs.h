@@ -6,8 +6,6 @@
 extern "C" {
 #endif
 
-#include <limits.h>
-
 
 typedef struct 
 {

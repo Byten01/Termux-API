@@ -27,6 +27,10 @@ int T_OpenFileDescriptor(const char* filepath, char* mode, TFile** output, TFile
 int T_CloseFileDescriptor(TFile* file_handle, TFile_Mode close_mode, int* returncode);
 int T_HaveAccess(const char* filepath, int flags);
 
+
+int T_GetEnvOrDefault(const char* Envname, char* output, int output_buff_size);
+
+
 #ifdef __cplusplus
 }
 #endif

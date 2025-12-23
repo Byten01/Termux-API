@@ -366,3 +366,28 @@ int T_ReadFile(const char* filepath , char* output, int output_buff_size)
                      
     
 }
+
+
+int T_GetEnvOrDefault(const char* Envname, char* output, int output_buff_size)
+{
+    
+    int returned_;
+    const char* data;
+    
+    returned_ = T_Getenv(
+            Envname,
+            &data,
+            NULL
+    );
+    
+    if(returned_ < 0)
+        return returned_;
+        
+    returned_ = T_MoveCharBuffer(
+            data,
+            output,
+            output_buff_size
+    );
+    
+    return returned_;
+}

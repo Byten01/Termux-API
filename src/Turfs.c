@@ -90,12 +90,15 @@ void InitPaths()
     
     
     char** PathMem[] = {
+        
         &TermuxFsPaths.T_AppRootDir,
         &TermuxFsPaths.T_FilesDir,
         &TermuxFsPaths.T_BinDir,
+        
         &TermuxFsPaths.T_LibDir,
         &TermuxFsPaths.T_LibexecDir,
         &TermuxFsPaths.T_EtcDir,
+        
         &TermuxFsPaths.T_HomeDir,
         &TermuxFsPaths.T_TmpDir,
         &TermuxFsPaths.T_PrefixDir

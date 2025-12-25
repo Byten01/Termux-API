@@ -14,25 +14,12 @@
 int TgetVersionInfo(char* output, int output_buff_size)
 {
     const char* version_env = "TERMUX_VERSION";
-    const char* version;
-    int returned_;
-    
-    returned_ = T_Getenv(
-            version_env, 
-            &version, 
-            NULL
-    );
-    
-    if(returned_ < 0)
-        return returned_;
-    
-       
-    returned_ = T_MoveCharBuffer(
-            version, 
-            output, 
+
+    return T_GetEnvOrDefault(
+            version_env,
+            output,
             output_buff_size
     );
-    return returned_;
     
     
 }
@@ -41,18 +28,12 @@ int TgetVersionInfo(char* output, int output_buff_size)
 int TgetShellCmdRunnerName(char* output, int output_buff_size)
 {
     const char* shell_cmd_env = "SHELL_CMD__RUNNER_NAME";
-    const char* shell_cmd;
-    int returned_;
-    
-            
-    returned_ = T_Getenv(shell_cmd_env, &shell_cmd, NULL);
-    
-    if(returned_ < 0)
-        return returned_;
-    
-   
-    returned_ = T_MoveCharBuffer(shell_cmd, output, output_buff_size);
-    return returned_;
+
+    return T_GetEnvOrDefault(
+            shell_cmd_env,
+            output,
+            output_buff_size
+    );
 }
 
 
@@ -60,17 +41,12 @@ int TgetShellCmdRunnerName(char* output, int output_buff_size)
 int TgetLanguage(char* output, int output_buff_size)
 {
     const char* language_env = "LANG";
-    const char* language;
-    int returned_;
     
-    returned_ = T_Getenv(language_env, &language, NULL);
-    
-    if(returned_ < 0)
-        return returned_;
-    
-    
-    returned_ = T_MoveCharBuffer(language, output, output_buff_size);
-    return returned_;
+    return T_GetEnvOrDefault(
+            language_env,
+            output,
+            output_buff_size 
+    );
 }
 
 
@@ -91,17 +67,12 @@ int TgetPid(pid_t* output)
 int TgetLastCmdExecutedPath(char* output, int output_buff_size)
 {
     const char* last_executed_env = "_";
-    const char* last_executed;
-    int returned_;
     
-    returned_ = T_Getenv(last_executed_env, &last_executed, NULL);    
-
-    if(returned_ < 0)
-        return returned_;
-     
-    
-    returned_ = T_MoveCharBuffer(last_executed, output, output_buff_size);
-    return returned_;
+    return T_GetEnvOrDefault(
+            last_executed_env,
+            output,
+            output_buff_size 
+    );
     
     
 }
@@ -113,7 +84,11 @@ int TgetTmuxPid(pid_t* output)
     const char* termux_pid;
     int returned_;
     
-    returned_ = T_Getenv(termux_pid_env, &termux_pid, NULL);
+    returned_ = T_Getenv(
+            termux_pid_env, 
+            &termux_pid, 
+            NULL
+    );
     
     if(returned_ < 0)
         return returned_;
@@ -131,8 +106,10 @@ int TgetTmuxPid(pid_t* output)
     
     
     if(output)
+    {
         *output = pid_;
         return returned_;
+    }
     
     
     return (int)pid_;
@@ -143,16 +120,12 @@ int TgetTmuxPid(pid_t* output)
 int TgetSEInfo(char* output, int output_buff_size)
 {
     const char* termux_se_info_env = "TERMUX_APP__SE_INFO";
-    const char* termux_se_info;
-    int returned_;
     
-    returned_ = T_Getenv(termux_se_info_env, &termux_se_info, NULL);
-    
-    if(returned_ < 0)
-        return returned_;
-        
-    returned_ = T_MoveCharBuffer(termux_se_info, output,output_buff_size);
-    return returned_;
+    return T_GetEnvOrDefault(
+            termux_se_info_env,
+            output,
+            output_buff_size 
+    );
 }
 
 
@@ -169,7 +142,11 @@ int TgetSessionCountSinceBoot(TUint* output)
     int returned_;
         
     
-    returned_ = T_Getenv(session_num_env, &session_num, NULL);
+    returned_ = T_Getenv(
+            session_num_env, 
+            &session_num, 
+            NULL
+    );
     
     if(returned_ < 0)
         return returned_;
@@ -188,31 +165,30 @@ int TgetSessionCountSinceBoot(TUint* output)
 int TgetPackageName(char* output, int output_buff_size)
 {
     const char* package_name_env = "TERMUX_APP__PACKAGE_NAME";
-    const char* package_name;
-    int returned_; 
-    
-    returned_ = T_Getenv(package_name_env, &package_name, NULL);
-    
-    if(returned_ < 0)
-        return returned_;
-        
-    returned_ = T_MoveCharBuffer(package_name, output,output_buff_size);
-    return returned_;
+
+    return T_GetEnvOrDefault(
+            package_name_env,
+            output,
+            output_buff_size 
+    );
 }
 
 
 int TgetApkRelease(char* output, int output_buff_size)
 {
     const char* apk_release_env = "TERMUX_APP__APK_RELEASE";
-    const char* apk_release;
+    const char apk_release[4096];
     
-    int return_flag = 0;
+    
     int flag = TMUX_PLATFORM_UNKNOWN;
     int returned_;
     
     
-    returned_ = T_Getenv(apk_release_env, &apk_release, NULL);
-    
+    returned_ = T_GetEnvOrDefault(
+            apk_release_env,
+            apk_release,
+            sizeof(apk_release)  
+    );    
     
     if(returned_ < 0)
         return returned_;
@@ -220,18 +196,22 @@ int TgetApkRelease(char* output, int output_buff_size)
                         
     if(output != NULL)
     {
-        returned_ = T_MoveCharBuffer(apk_release, output, output_buff_size);
+        returned_ = T_MoveCharBuffer(
+                apk_release, 
+                output, 
+                output_buff_size
+        );
         return returned_;
     }
     
     
-    if (strcmp(apk_release, "F_DROID") == 0)
+    if (strcmp(apk_release, TMUX_PLATFORM_F_DROID_CHR) == 0)
         flag = TMUX_PLATFORM_F_DROID;
         
-    if (strcmp(apk_release, "GITHUB") == 0)
+    if (strcmp(apk_release, TMUX_PLATFORM_GITHUB_CHR) == 0)
         flag = TMUX_PLATFORM_GITHUB;
         
-    if(strcmp(apk_release, "PLAY_STORE") == 0)
+    if(strcmp(apk_release, TMUX_PLATFORM_PLAY_STORE_CHR) == 0)
         flag = TMUX_PLATFORM_PLAY_STORE;
         
 
@@ -246,7 +226,11 @@ int TgetAndroidSdkVersion(TUint* output)
     int returned_;
     
           
-    returned_ = T_Getenv(android_sdk_version_env, &sdk_version, NULL);
+    returned_ = T_Getenv(
+            android_sdk_version_env, 
+            &sdk_version, 
+            NULL
+    );
     
     if(returned_ < 0)
         return returned_;
@@ -279,7 +263,11 @@ int TgetTmuxSdkVersion(TUint* output)
     int returned_;
     
           
-    returned_ = T_Getenv(termux_sdk_version_env, &termux_sdk_version, NULL);
+    returned_ = T_Getenv(
+            termux_sdk_version_env, 
+            &termux_sdk_version, 
+            NULL
+    );
     
     if(returned_ < 0)
         return returned_;

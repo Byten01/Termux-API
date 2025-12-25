@@ -34,18 +34,6 @@ typedef enum
 #define TMUX_OPEAREATION_NOT_PERMITTED -16
 
 
-// file system based macros 
-
-#define TMUX_BIN     (1 << 0)
-#define TMUX_FR       (1 << 1)
-#define TMUX_FRB    (TMUX_BIN | TMUX_R)
-
-#define TMUX_FW       (1 << 2)
-#define TMUX_FWB    (TMUX_BIN | TMUX_W)
-
-
-#define TMUX_FOVERRIDE (1 << 3)
-
 
 
 
@@ -63,6 +51,10 @@ typedef enum
 #define TMUX_PLATFORM_GITHUB                   (1 << 2)
 #define TMUX_PLATFORM_UNKNOWN           (1 << 3)
 
+
+#define TMUX_PLATFORM_F_DROID_CHR            "F_DROID"
+#define TMUX_PLATFORM_PLAY_STORE_CHR    "PLAY_STORE"
+#define TMUX_PLATFORM_GITHUB_CHR               "GITHUB"
 
 
 

@@ -249,7 +249,13 @@ int T_FReadBufferD(TFile* fp, char** output) {
         return TMUX_FAILED;
         
     while (1) {
-        size_t n = fread(buffer_total + len_total, 1, cap - len_total, fp);
+        
+        size_t n = fread(
+                buffer_total + len_total, 
+                1, 
+                cap - len_total, 
+                fp
+        );
         len_total += n;
 
         if (n == 0)
@@ -382,6 +388,7 @@ int T_GetEnvOrDefault(const char* Envname, char* output, int output_buff_size)
     
     if(returned_ < 0)
         return returned_;
+        
         
     returned_ = T_MoveCharBuffer(
             data,

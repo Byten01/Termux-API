@@ -11,6 +11,13 @@
 #include "TurInfo.h"
 
 
+#define TMUX_PLATFORM_F_DROID_CHR            "F_DROID"
+#define TMUX_PLATFORM_PLAY_STORE_CHR    "PLAY_STORE"
+#define TMUX_PLATFORM_GITHUB_CHR               "GITHUB"
+
+
+
+
 int TgetVersionInfo(char* output, int output_buff_size)
 {
     const char* version_env = "TERMUX_VERSION";

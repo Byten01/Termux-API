@@ -52,9 +52,6 @@ typedef enum
 #define TMUX_PLATFORM_UNKNOWN           (1 << 3)
 
 
-#define TMUX_PLATFORM_F_DROID_CHR            "F_DROID"
-#define TMUX_PLATFORM_PLAY_STORE_CHR    "PLAY_STORE"
-#define TMUX_PLATFORM_GITHUB_CHR               "GITHUB"
 
 
 

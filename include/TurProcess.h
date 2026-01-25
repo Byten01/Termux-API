@@ -7,7 +7,7 @@ extern "C" {
 
 #include <unistd.h>
 
-int Tlogout();
+int TlogoutTmux();
 int TgetParentPgid(pid_t* output);
 int TsendSignalToPid(pid_t pid, int signal);
 

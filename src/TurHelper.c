@@ -10,8 +10,6 @@
 #include "TurErrors.h"
 
 
-
-
 // Environment variable
 
 int T_Getenv(const char* Envname, const char** output, int* get_output_size)
@@ -398,3 +396,6 @@ int T_GetEnvOrDefault(const char* Envname, char* output, int output_buff_size)
     
     return returned_;
 }
+
+
+

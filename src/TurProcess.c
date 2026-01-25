@@ -11,7 +11,7 @@
 #include "TurHelper.h"
 
 
-int Tlogout()
+int TlogoutTmux()
 {
     pid_t parent_pid_grp;
     int returned_;

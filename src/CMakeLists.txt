@@ -5,12 +5,18 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(SOURCES
-    TurHelper.c
+
     Turfs.c
     TurErrors.c
     TurInfo.c
     TurProcess.c
     init.c
+    custom/buffer.c
+    custom/memory.c
+    custom/file.c
+    custom/env.c
+    custom/process.c
+    custom/datatypes.c
 )
 
 add_library(Tkernel SHARED ${SOURCES})

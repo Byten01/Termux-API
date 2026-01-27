@@ -19,11 +19,15 @@ extern "C" {
 
 
 #include "Turdefs.h"
-#include "TurHelper.h"
 #include "Turfs.h"
 #include "TurErrors.h"
 #include "TurInfo.h"
 #include "TurProcess.h"
+#include "custom/buffer.h"
+#include "custom/env.h"
+#include "custom/memory.h"
+#include "custom/file.h"
+#include "custom/datatypes.h"
 
 
 

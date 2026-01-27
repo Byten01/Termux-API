@@ -8,7 +8,8 @@
 
 #include "TurErrors.h"
 #include "Turdefs.h"
-#include "TurHelper.h"
+#include "custom/buffer.h"
+#include "custom/memory.h"
 
 char* T_ErrmsgBuffer;
 bool  T_LogError = true;

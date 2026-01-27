@@ -8,7 +8,8 @@
 #include "Turdefs.h"
 #include "TurInfo.h"
 #include "TurProcess.h"
-#include "TurHelper.h"
+
+#include "custom/process.h"
 
 
 int TlogoutTmux()

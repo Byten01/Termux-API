@@ -6,10 +6,12 @@
 
 
 #include "Turdefs.h"
-#include "TurHelper.h"
 #include "TurErrors.h"
 #include "TurInfo.h"
 
+#include "custom/buffer.h"
+#include "custom/env.h"
+#include "custom/datatypes.h"
 
 #define TMUX_PLATFORM_F_DROID_CHR            "F_DROID"
 #define TMUX_PLATFORM_PLAY_STORE_CHR    "PLAY_STORE"
@@ -90,6 +92,7 @@ int TgetTmuxPid(pid_t* output)
     const char* termux_pid_env = "TERMUX_APP__PID";
     const char* termux_pid;
     int returned_;
+    int termux_pid_num;
     
     returned_ = T_Getenv(
             termux_pid_env, 
@@ -100,8 +103,17 @@ int TgetTmuxPid(pid_t* output)
     if(returned_ < 0)
         return returned_;
      
-    const int pid_conv = atoi(termux_pid);      
-    pid_t pid_ = (pid_t)pid_conv;
+    returned_ = T_TypeCnvrt(
+            termux_pid,
+            TYPE_CNVRT_INT,
+            (TPtr*)&termux_pid_num                                 
+    );
+    
+    if(returned_ < 0)
+        return returned_;
+        
+        
+    pid_t pid_ = (pid_t)termux_pid_num;
     
      
     if(pid_ <= 0)
@@ -147,7 +159,7 @@ int TgetSessionCountSinceBoot(TUint* output)
     const char* session_num_env = "SHELL_CMD__APP_TERMINAL_SESSION_NUMBER_SINCE_BOOT";
     const char* session_num;
     int returned_;
-        
+    int session_count;        
     
     returned_ = T_Getenv(
             session_num_env, 
@@ -159,7 +171,16 @@ int TgetSessionCountSinceBoot(TUint* output)
         return returned_;
         
 
-    int session_count = atoi(session_num);    
+    returned_ = T_TypeCnvrt(
+            session_num,
+            TYPE_CNVRT_INT,
+            (TPtr*)&session_count
+    );
+    
+    if(returned_ < 0)
+        return returned_;
+        
+        
     
     if(output == NULL)        
         return session_count;
@@ -231,6 +252,7 @@ int TgetAndroidSdkVersion(TUint* output)
     const char* android_sdk_version_env = "ANDROID__BUILD_VERSION_SDK";
     const char* sdk_version;
     int returned_;
+    int version_num;
     
           
     returned_ = T_Getenv(
@@ -242,8 +264,17 @@ int TgetAndroidSdkVersion(TUint* output)
     if(returned_ < 0)
         return returned_;
         
-    int version_num = atoi(sdk_version);
+        
+    returned_ = T_TypeCnvrt(
+            sdk_version,
+            TYPE_CNVRT_INT,
+            (TPtr*)&version_num
+    );
     
+    if(returned_ < 0)
+        return returned_;
+        
+
 
     if(version_num <= 0 || version_num > 100)
     {
@@ -268,6 +299,7 @@ int TgetTmuxSdkVersion(TUint* output)
     const char* termux_sdk_version_env = "TERMUX_APP__TARGET_SDK";
     const char* termux_sdk_version;
     int returned_;
+    int sdk_version;
     
           
     returned_ = T_Getenv(
@@ -279,20 +311,24 @@ int TgetTmuxSdkVersion(TUint* output)
     if(returned_ < 0)
         return returned_;
         
-    int version_num = atoi(termux_sdk_version);
+    returned_ = T_TypeCnvrt(
+            termux_sdk_version,
+            TYPE_CNVRT_INT,
+            (TPtr*)&sdk_version
+    );
     
 
-    if(version_num <= 0 || version_num > 100)
+    if(sdk_version <= 0 || sdk_version > 100)
     {
-        T_setError("termux vesion index out of range (%d).. its either conversion failed or a miscondigured environment variable is set", version_num);
+        T_setError("termux vesion index out of range (%d).. its either conversion failed or a miscondigured environment variable is set", sdk_version);
         return TMUX_FAILED;
     }
     
     if(output == NULL)
-        return version_num;
+        return sdk_version;
         
         
-    *output = (TUint)version_num;            
+    *output = (TUint)sdk_version;            
     return returned_;
 
         

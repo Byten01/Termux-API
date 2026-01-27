@@ -7,7 +7,10 @@
 #include <pwd.h>
 
 #include "Turdefs.h"
-#include "TurHelper.h"
+#include "custom/memory.h"
+#include "custom/buffer.h"
+#include "custom/env.h"
+#include "custom/file.h"
 #include "Turfs.h"
 #include "TurErrors.h"
 

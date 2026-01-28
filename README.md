@@ -1,18 +1,6 @@
 # Termux-API
 
-a high level api to interact with termux shell environment via C/C++. currently in early developmment with only some of the functions implemented
-
-***
-
-## Getting Started
-<p align="center">
-It is a termux only api so it should be compiled and used in a termux environment, it is recommended to use android studio or any kind of android virtual machine if using other device than android termux for development
-</p>
-
-<ins>**1. Downloading the repository:**</ins>
-
-clone the repository with this command 
-```sh
+a high level api to interact with termux shell environment via C/C++. currently in early developmment with only some of the fun```sh
 git clone https://github.com/Byten01/Termux-API.git
 ```
 

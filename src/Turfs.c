@@ -25,12 +25,14 @@ void InitPaths()
     int returned_;
     
     
+    DBG_INFO("Start of InitPaths");
+    
     struct passwd *pw = getpwuid(getuid());
     
     
     if(!pw || !pw->pw_shell)
     {
-        printf("[FATAL ERROR] %s : failed to get the shell dir\n", __FILE__);
+        DBG_FATAL("Failed to get the shell dir");
         exit(1);
     }
     
@@ -46,7 +48,7 @@ void InitPaths()
     if(returned_ < 0)
     {
         const char* Error = T_getError();
-        printf("[FATAL ERROR] %s : %s\n", __FILE__, Error);
+        DBG_FATAL("Failed to allocate memory : %s", Error);
         exit(1);
     }
         
@@ -64,7 +66,7 @@ void InitPaths()
     
     if (!marker)
     {
-        printf("[FATAL ERROR] %s : failed to get the /files/ dir in termux fs\n", __FILE__);
+        DBG_FATAL("Failed to get the /files/ dir marker in termux initPaths");
         exit(1);
     }    
     *marker = '\0';
@@ -84,7 +86,7 @@ void InitPaths()
         
         "%s/files/usr/lib",        
         "%s/files/usr/libexec",
-        "%s/files/etc",
+        "%s/files/usr/etc",
         
         "%s/files/home",        
         "%s/files/usr/tmp",
@@ -111,6 +113,7 @@ void InitPaths()
              
     const int path_count = sizeof(TermuxFsPaths.T_AllPaths) / sizeof(char*);
     
+    DBG_INFO("Start of for loop\n");
     
     for(int i=1; i < path_count; i++)
     {
@@ -130,7 +133,8 @@ void InitPaths()
         if(returned_ < 0)
         {
             const char* Error = T_getError();
-            printf("[FATAL ERROR] %s : %s\n", __FILE__, Error);
+            DBG_FATAL("memory allocation failed : %s", Error);
+
             exit(1);
         }
         
@@ -144,36 +148,32 @@ void InitPaths()
         
         if(access(*Ptr, F_OK) != 0)
         {
-            #ifdef TURFS_DBGPRINT
-                printf("[INFO] Path doesnt exists %s\n", *Ptr);
-            #endif
-            
+            DBG_INFO("Path doesn't exists %s", *Ptr);
+                        
         } else {
-            #ifdef TURFS_DBGPRINT
-                printf("[INFO] Path exists %s\n", *Ptr);
-            #endif
+            DBG_INFO("Path exists %s", *Ptr);
         }
         
         TermuxFsPaths.T_AllPaths[i] = *Ptr;
         
     }
     
-
-
-        
+    DBG_INFO("End of for loop\n\n");
     
-    #ifdef TURFS_DBGPRINT
-        printf("root: %s\n", TermuxFsPaths.T_AppRootDir);
-        printf("rootfs: %s\n", TermuxFsPaths.T_FilesDir);
-        printf("libexec: %s\n", TermuxFsPaths.T_LibexecDir);
-        printf("etc: %s\n", TermuxFsPaths.T_EtcDir);
-        printf("lib: %s\n", TermuxFsPaths.T_LibDir);
-        printf("home: %s\n", TermuxFsPaths.T_HomeDir);
-        printf("tmp: %s\n", TermuxFsPaths.T_TmpDir);
-        printf("prefix: %s\n", TermuxFsPaths.T_PrefixDir);
-   #endif
 
 
+
+    DBG_INFO("root: %s", TermuxFsPaths.T_AppRootDir);
+    DBG_INFO("rootfs: %s", TermuxFsPaths.T_FilesDir);
+    DBG_INFO("libexec: %s", TermuxFsPaths.T_LibexecDir);
+    DBG_INFO("etc: %s", TermuxFsPaths.T_EtcDir);
+    DBG_INFO("lib: %s", TermuxFsPaths.T_LibDir);
+    DBG_INFO("home: %s", TermuxFsPaths.T_HomeDir);
+    DBG_INFO("tmp: %s", TermuxFsPaths.T_TmpDir);
+    DBG_INFO("prefix: %s", TermuxFsPaths.T_PrefixDir);
+
+
+    DBG_INFO("End of InitPaths");
 
 
     
@@ -186,7 +186,7 @@ int TgetKnownFolderPath(TMux_DirFlags flag, char* output, int output_buff_size)
 {
     
     char* ptr;
-    int returned_; // for future pourpouse 
+    int returned_;
     
     switch(flag)
     {
